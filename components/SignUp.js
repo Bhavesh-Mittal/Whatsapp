@@ -85,7 +85,7 @@ export default function SignUp() {
       <Button
         mode="contained"
         onPress={() => userSignUp()}
-        disabled={username && email && password ? false : true}
+        disabled={username && email && password && image ? false : true}
         style={styles.btn}>
         Sign Up
       </Button>

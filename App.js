@@ -20,10 +20,12 @@ const AuthNavigator = () => {
   );
 };
 
-const ChatsNavigator = () => {
+const ChatsNavigator = ({ user }) => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Chats" component={ChatsDisplayScreen} />
+      <Stack.Screen name="Chats">
+        { props => <ChatsDisplayScreen { ...props } user={ user } /> }
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -42,7 +44,7 @@ const Navigator = () => {
 
   return (
     <NavigationContainer>
-      {user ? <ChatsNavigator /> : <AuthNavigator />}
+      {user ? <ChatsNavigator user={ user }  /> : <AuthNavigator />}
     </NavigationContainer>
   );
 };
