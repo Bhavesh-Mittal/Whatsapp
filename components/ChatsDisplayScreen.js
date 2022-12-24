@@ -7,7 +7,7 @@ import firestore from '@react-native-firebase/firestore';
 export default function ChatsDisplayScreen({ user, navigation }) {
   const [users, setUsers] = useState('');
 
-  const renderItem = ({ item, navigation }) => {
+  const renderItem = ({ item , navigation}) => {
     return (
       <TouchableOpacity onPress={ () => navigation.navigate("ChatScreen", {name: item.username, uid: user.uid}) }>
         <View style={ styles.chatContainer }>
@@ -19,7 +19,7 @@ export default function ChatsDisplayScreen({ user, navigation }) {
   }
 
   const getDetails = async () => {
-    const querySnap = await firestore().collection('users').get();
+    const querySnap = await firestore().collection('users').where('uid', '!=', user.uid).get();
     const result = querySnap.docs.map((docSnap) => docSnap.data());
     setUsers(result);
   };

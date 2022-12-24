@@ -48,12 +48,12 @@ export default function SignUp() {
 
   const userSignUp = async () => {
     try {
-      await auth().createUserWithEmailAndPassword(email, password);
-      firestore().collection('users').add({
+      const result = await auth().createUserWithEmailAndPassword(email, password);
+      firestore().collection('users').doc(result.user.uid).set({
         email: email,
-        password: password,
         username: username,
-        image: image
+        image: image,
+        uid: result.user.uid,
       });
     } catch (err) {
       console.log(err);

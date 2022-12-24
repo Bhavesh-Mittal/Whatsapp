@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import ChatsDisplayScreen from './components/ChatsDisplayScreen';
+import ChatScreen from './components/ChatScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -25,6 +26,9 @@ const ChatsNavigator = ({ user }) => {
     <Stack.Navigator>
       <Stack.Screen name="Chats">
         { props => <ChatsDisplayScreen { ...props } user={ user } /> }
+      </Stack.Screen>
+      <Stack.Screen name="ChatScreen">
+        { props => <ChatScreen { ...props } user={ user } /> }
       </Stack.Screen>
     </Stack.Navigator>
   );
