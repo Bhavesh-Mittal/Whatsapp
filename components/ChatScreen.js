@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
-import firestore from '@react-native-firebase/firestore';
 
 export default function ChatScreen({ user, route }) {
   const [messages, setMessages] = useState([]);
@@ -14,17 +13,17 @@ export default function ChatScreen({ user, route }) {
     .orderBy('createdAt',"desc");
 
     const unSubscribe = messageRef.onSnapshot((querySnap) => {
-      const allMessages = querySnap.docs.map(docSanp => {
-        const data = docSanp.data();
+      const allMessages = querySnap.docs.map(docSnap => {
+        const data = docSnap.data();
         if (data.createdAt) {
           return {
-            ...docSanp.data(),
-            createdAt: docSanp.data().createdAt.toDate(),
+            ...docSnap.data(),
+            createdAt: docSnap.data().createdAt.toDate(),
           }
         } else {
           return {
-            ...docSanp.data(),
-            createdAt:new Date(),
+            ...docSnap.data(),
+            createdAt: new Date(),
           }
         }  
       });

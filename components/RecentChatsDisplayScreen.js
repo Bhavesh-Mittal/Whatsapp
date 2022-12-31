@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, Alert, FlatList, TouchableOpacity } from 'react-native';
-import { Button } from 'react-native-paper';
-import auth from '@react-native-firebase/auth';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
-export default function ChatsDisplayScreen({ user, navigation }) {
-  const [users, setUsers] = useState('');
+export default function RecentChatsDisplayScreen({ user, navigation }) {
+  const [users, setUsers] = useState([]);
 
   const renderItem = ({ item, navigation }) => {
     return (
@@ -19,23 +17,23 @@ export default function ChatsDisplayScreen({ user, navigation }) {
   }
 
   const getDetails = async () => {
+    let recentUsers = [];
     const querySnap = await firestore().collection('users').where('uid', '!=', user.uid).get();
-    const result = querySnap.docs.map((docSnap) => docSnap.data());
-    setUsers(result);
+    const allUsers = querySnap.docs.map((docSnap) => docSnap.data());
+    for (let i = 0; i < allUsers.length; i++) {
+        const docId  = allUsers[i]['uid'] > user.uid ? user.uid + "-" + allUsers[i]['uid'] : allUsers[i]['uid'] + "-" + user.uid;
+        const chats = await firestore().collection('chatRooms').doc(docId).collection('messages').get();
+        const allMessages = chats.docs.map(docSnap => docSnap.data());
+        if (allMessages.length > 0) {
+            recentUsers.push(allUsers[i]);
+        }
+    }
+    setUsers(recentUsers);
   };
 
   useEffect(() => {
     getDetails();
-  });
-
-  const userSignOut = async () => {
-    try {
-      await auth().signOut();
-    } catch (err) {
-      console.log(err);
-      Alert.alert('Something went wrong. Please try again later.');
-    }
-  }
+  }, [users]);
 
   return (
     <View style={styles.container}>
@@ -44,12 +42,6 @@ export default function ChatsDisplayScreen({ user, navigation }) {
         renderItem={({ item }) => renderItem({ item, navigation })}
         keyExtractor={(item) => item.username}
       />
-      <Button
-        mode="contained"
-        onPress={() => userSignOut()}
-        style={styles.btn}>
-        Sign Out
-      </Button>
     </View>
   );
 }
